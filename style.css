@@ -67,10 +67,9 @@ hr {
 table#attemptsTable {
     align-items: center;
     border-radius: 10px;
-    margin-top: 20px;
     border-collapse: separate;
     border-spacing: 5px;
-    margin: 0 auto; /* Add margin: 0 auto to center the table horizontally */
+    margin: 0 auto;
 }
 table#attemptsTable td {
     padding: 6px;
@@ -92,10 +91,7 @@ table#attemptsTable td {
     font-family: 'Times New Roman';
     color: white;
     border: none;
-    margin-right: auto;
-    margin-top: 20px;
-    margin-left: 10px;
-    margin-bottom: -60px;
+    margin: 20px auto -60px 10px;
 }
 .popup {
     position: fixed;
