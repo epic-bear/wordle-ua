@@ -6,62 +6,61 @@ function generateRandomWord() {
 }
 
 // Get DOM elements
-const feedback = document.getElementById('feedback');
 const submitBtn = document.getElementById('enter');
 const restartBtn = document.getElementById('restart');
 const letterButtons = document.querySelectorAll('.letter');
 const attemptsTable = document.getElementById('attemptsTable');
 const deleteBtn = document.getElementById('delete');
 
-
-// Initialize game variables
 let targetWord;
 let attempts = 0;
 let columnIndex = 0;
 const maxAttempts = 6;
-const attemptsFeedback = [];
 
-// Handle the guess submission
 function handleGuess() {
-    if(columnIndex != 5) {
+    if (columnIndex !== 5) {
         return;
     }
-    let currentRow = document.getElementById('attemptsTable').rows.item(attempts).cells;;
+    let currentRow = document.getElementById('attemptsTable').rows.item(attempts).cells;
     let guess = '';
     for (var j = 0; j < currentRow.length; j++) {
         guess += currentRow.item(j).innerHTML;
     }
-    const [correctPositionCount, correctLetterCount] = checkGuess(guess, targetWord);
+    let isGuessCorrect = checkGuess(guess.toUpperCase(), targetWord.toUpperCase());
+    if (isGuessCorrect) {
 
-    attempts++;
-    columnIndex = 0;
-    if (correctPositionCount === 5) {
-        feedback.textContent = `Congratulations! You guessed the word in ${attempts} attempts.`;
     } else {
-        feedback.textContent = `Guess ${attempts}: ${guess} | Correct positions: ${correctPositionCount} | Correct letters: ${correctLetterCount}`;
+        attempts++;
+        columnIndex = 0;
     }
-
-    if (attempts === maxAttempts) {
-        feedback.textContent += `\nYou ran out of attempts. The word was ${targetWord}.`;
-    }
-
-    if (attempts === maxAttempts || correctPositionCount === 5) {
-        submitBtn.disabled = true;
-    }
-
-    // Store the feedback for the current attempt
-    attemptsFeedback.push(`${correctPositionCount}/${correctLetterCount}`);
-
-    // Update the attempts table
-    updateAttemptsTable(guess, attemptsFeedback);
 }
 
-function checkGuess() {
+function checkGuess(guess, targetWord) {
+    let count = 0;
+    for (let i = 0; i < targetWord.length; i++) {
+        const targetChar = targetWord[i];
+        const guessChar = guess[i];
+        const button = document.getElementById(guessChar);
 
+        if (guessChar === targetChar) {
+            const cell = document.querySelector(`#cell-${attempts}-${i}`);
+            cell.style.backgroundColor = 'rgb(99,178,46)';
+            button.style.backgroundColor = 'rgb(99,178,46)';
+            ++count;
+        } else if (targetWord.includes(guessChar)) {
+            const cell = document.querySelector(`#cell-${attempts}-${i}`);
+            cell.style.backgroundColor = 'rgb(234,202,73)';
+            button.style.backgroundColor = 'rgb(234,202,73)';
+        } else {
+            button.style.backgroundColor = 'rgb(36, 36, 36)';
+        }
+    }
+
+    return count === 5;
 }
 
 function handleLetterPress(event) {
-    if(columnIndex == 5) {
+    if (columnIndex == 5) {
         return;
     }
     const letter = event.target.textContent;
@@ -77,57 +76,27 @@ function handleLetterPress(event) {
 }
 
 function handleDelete() {
-    if(columnIndex == 0) {
+    if (columnIndex === 0) {
         return;
     }
     columnIndex--;
-    const currentRow = attempts;
-    const cell = document.querySelector(`#cell-${currentRow}-${columnIndex}`);
-    if (cell.textContent == '') {
+    const cell = document.querySelector(`#cell-${attempts}-${columnIndex}`);
+    if (cell.textContent === '') {
         // No attempts made yet, nothing to delete
         return;
     }
-
     // Clear the current cell
     cell.textContent = '';
 }
 
-// Update the attempts table
-function updateAttemptsTable(guess, attemptsFeedback) {
-    const currentRow = Math.floor((attempts - 1) / 5);
-    const row = document.querySelector(`tr:nth-child(${currentRow + 1})`);
-    const guessCells = row.querySelectorAll('.guess-cell');
-    const feedbackCells = row.querySelectorAll('.feedback-cell');
-
-    // Update the table cells with the guess letters and feedback
-    guess.split('').forEach((letter, index) => {
-        guessCells[index].textContent = letter;
-    });
-
-    attemptsFeedback.forEach((feedback, index) => {
-        feedbackCells[index].textContent = feedback;
-    });
-}
-
 function handleRestart() {
     initializeGame();
-
-    // Enable letter buttons
-    letterButtons.forEach(button => {
-        button.disabled = false;
-    });
-
-    // Set focus on the first cell of the initial row'
-    columnIndex = 0;
-    const firstCell = document.querySelector(`#cell-0-0`);
-    firstCell.focus();
 }
 
-// Initialize a new game
 function initializeGame() {
     targetWord = generateRandomWord();
     attempts = 0;
-    feedback.textContent = '';
+    columnIndex = 0;
 
     // Clear the table cells
     const guessCells = document.querySelectorAll('.guess-cell');
@@ -135,18 +104,20 @@ function initializeGame() {
         cell.textContent = '';
     });
 
-    const feedbackCells = document.querySelectorAll('.feedback-cell');
-    feedbackCells.forEach(cell => {
-        cell.textContent = '';
-    });
-
     const emptyCells = document.querySelectorAll('.empty-cell');
     emptyCells.forEach(cell => {
         cell.textContent = '';
+        cell.style.backgroundColor = 'rgb(36, 36, 36)';
     });
 
     const firstCell = document.querySelector(`#cell-0-0`);
     firstCell.focus();
+
+    const letterButtons = document.querySelectorAll('.letter');
+    letterButtons.forEach(button => {
+        button.disabled = false;
+        button.style.backgroundColor = 'gray';
+    });
 
     submitBtn.disabled = false;
     deleteBtn.disabled = false;
