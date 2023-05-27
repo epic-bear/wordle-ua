@@ -157,11 +157,11 @@ function handleLetterPress(event) {
     }
     const letter = event.target.textContent;
     const cell = document.querySelector(`#cell-${attempts}-${columnIndex}`);
-    cell.textContent = letter;
     cell.classList.remove('jump-animation');
     setTimeout(() => {
         cell.classList.add('jump-animation');
     }, 10);
+    cell.textContent = letter;
     // Move to the next column
     columnIndex++;
 }
