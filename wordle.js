@@ -128,15 +128,23 @@ function checkGuess(guess, targetWord) {
         const guessChar = guess[i];
         const button = document.getElementById(guessChar);
         const cell = document.querySelector(`#cell-${attempts}-${i}`);
+        cell.classList.remove('jump-animation');
+        void cell.offsetWidth;
         if (guessChar === targetChar) {
             cell.style.backgroundColor = 'rgb(99,178,46)';
+            cell.classList.add('jump-animation');
+            cell.style.animationDelay = `${i * 0.1}s`;
             button.style.backgroundColor = 'rgb(99,178,46)';
             ++count;
         } else if (targetWord.includes(guessChar)) {
             cell.style.backgroundColor = 'rgb(234,202,73)';
+            cell.classList.add('jump-animation');
+            cell.style.animationDelay = `${i * 0.1}s`;
             button.style.backgroundColor = 'rgb(234,202,73)';
         } else {
             cell.style.backgroundColor = 'rgb(36, 36, 36)';
+            cell.classList.add('jump-animation');
+            cell.style.animationDelay = `${i * 0.1}s`;
             button.style.backgroundColor = 'rgb(36, 36, 36)';
         }
     }
@@ -144,12 +152,16 @@ function checkGuess(guess, targetWord) {
 }
 
 function handleLetterPress(event) {
-    if (columnIndex == 5) {
+    if (columnIndex === 5) {
         return;
     }
     const letter = event.target.textContent;
     const cell = document.querySelector(`#cell-${attempts}-${columnIndex}`);
     cell.textContent = letter;
+    cell.classList.remove('jump-animation');
+    setTimeout(() => {
+        cell.classList.add('jump-animation');
+    }, 10);
     // Move to the next column
     columnIndex++;
 }
@@ -165,6 +177,7 @@ function handleDelete() {
         return;
     }
     // Clear the current cell
+    cell.classList.remove('jump-animation');
     cell.textContent = '';
 }
 
