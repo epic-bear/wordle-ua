@@ -1,21 +1,27 @@
-// Generate a random five-letter word
-function generateRandomWord() {
-    const words = ['котик', 'блоха', 'килим', 'цукор', 'ґанок'];
-    const randomIndex = Math.floor(Math.random() * words.length);
-    return words[randomIndex];
-}
-
 // Get DOM elements
 const submitBtn = document.getElementById('enter');
 const restartBtn = document.getElementById('restart');
 const letterButtons = document.querySelectorAll('.letter');
 const attemptsTable = document.getElementById('attemptsTable');
 const deleteBtn = document.getElementById('delete');
+const feedback = document.getElementById('feedback');
 
 let targetWord;
 let attempts = 0;
 let columnIndex = 0;
 const maxAttempts = 6;
+let words;
+
+// Generate a random five-letter word
+function generateRandomWord() {
+    const request = new XMLHttpRequest();
+    request.open('GET', 'words.txt', false);
+    request.send();
+    const wordsString = request.responseText.replace(/[\n\r]/g, ''); // Remove new lines
+    words = wordsString.split(',');
+    const randomIndex = Math.floor(Math.random() * words.length);
+    return words[randomIndex];
+}
 
 function handleGuess() {
     if (columnIndex !== 5) {
@@ -23,12 +29,19 @@ function handleGuess() {
     }
     let currentRow = document.getElementById('attemptsTable').rows.item(attempts).cells;
     let guess = '';
-    for (var j = 0; j < currentRow.length; j++) {
+    for (let j = 0; j < currentRow.length; j++) {
         guess += currentRow.item(j).innerHTML;
     }
-    let isGuessCorrect = checkGuess(guess.toUpperCase(), targetWord.toUpperCase());
+    if (!words.includes(guess)) {
+        // Guess is not in the words list
+        showMessage("This word is not in the list", 1000);
+        return false;
+    }
+    let isGuessCorrect = checkGuess(guess, targetWord);
     if (isGuessCorrect) {
-
+        showMessage("Congratulations! You guessed the word correctly.", 2000, "Press the 'New Game' button to restart.");
+        deleteBtn.disabled = true;
+        return true;
     } else {
         attempts++;
         columnIndex = 0;
@@ -97,6 +110,7 @@ function initializeGame() {
     targetWord = generateRandomWord();
     attempts = 0;
     columnIndex = 0;
+    feedback.textContent = '';
 
     // Clear the table cells
     const guessCells = document.querySelectorAll('.guess-cell');
@@ -123,6 +137,32 @@ function initializeGame() {
     deleteBtn.disabled = false;
 }
 
+function showMessage(message, duration, appendMessage) {
+    const popUp = document.createElement("div");
+    popUp.className = "popup-message";
+    popUp.textContent = message;
+    document.body.appendChild(popUp);
+
+    // Center the pop-up message
+    popUp.style.position = "fixed";
+    popUp.style.top = "35%";
+    popUp.style.left = "50%";
+    popUp.style.transform = "translate(-50%, -50%)";
+    popUp.style.backgroundColor = 'black';
+    popUp.style.color = 'white';
+    popUp.style.fontSize = '30px';
+    popUp.style.padding = "40px";
+
+    if (appendMessage) {
+        const note = document.createElement("div");
+        note.className = "popup-note";
+        note.textContent = appendMessage;
+        popUp.appendChild(note);
+    }
+    setTimeout(() => {
+        document.body.removeChild(popUp);
+    }, duration);
+}
 const rulesButton = document.getElementById("rules-button");
 const popUp = document.createElement("div");
 popUp.className = "popup";
