@@ -88,6 +88,7 @@ table#attemptsTable td {
 }
 .empty-cell {
     background-color: rgb(36, 36, 36);
+    border-radius: 5px;
 }
 #rules-button {
     background-color: rgba(189, 184, 184, 0);
