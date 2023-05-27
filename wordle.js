@@ -82,7 +82,7 @@ function handleGuess() {
         showMessage(
             "Досягнуто максимальної кількості спроб.",
             2000,
-            "Щоб перезапустити гру, натисніть кнопку «Нова гра»."
+            "Щоб почати заново, натисніть кнопку «НОВА ГРА»."
         );
         deleteBtn.disabled = true;
         return true;
@@ -104,7 +104,7 @@ function handleGuess() {
     if (isGuessCorrect) {
         showMessage("Вітаю! Ви вгадали слово.",
             2000,
-            "Щоб перезапустити гру, натисніть кнопку «Нова гра».");
+            "Щоб почати заново, натисніть кнопку «НОВА ГРА».");
         deleteBtn.disabled = true;
         return true;
     } else {
@@ -115,7 +115,7 @@ function handleGuess() {
         showMessage(
             "Досягнуто максимальної кількості спроб.",
             2000,
-            "Щоб перезапустити гру, натисніть кнопку «Нова гра»."
+            "Щоб почати заново, натисніть кнопку «НОВА ГРА»."
         );
         deleteBtn.disabled = true;
     }
@@ -127,17 +127,16 @@ function checkGuess(guess, targetWord) {
         const targetChar = targetWord[i];
         const guessChar = guess[i];
         const button = document.getElementById(guessChar);
-
+        const cell = document.querySelector(`#cell-${attempts}-${i}`);
         if (guessChar === targetChar) {
-            const cell = document.querySelector(`#cell-${attempts}-${i}`);
             cell.style.backgroundColor = 'rgb(99,178,46)';
             button.style.backgroundColor = 'rgb(99,178,46)';
             ++count;
         } else if (targetWord.includes(guessChar)) {
-            const cell = document.querySelector(`#cell-${attempts}-${i}`);
             cell.style.backgroundColor = 'rgb(234,202,73)';
             button.style.backgroundColor = 'rgb(234,202,73)';
         } else {
+            cell.style.backgroundColor = 'rgb(36, 36, 36)';
             button.style.backgroundColor = 'rgb(36, 36, 36)';
         }
     }
@@ -178,14 +177,14 @@ const popUp = document.createElement("div");
 popUp.className = "popup";
 popUp.innerHTML = `
   <div class="popup-content">
-    <h2>Game Rules</h2>
+    <h1>Правила гри</h1>
     <ul>
-    <li>Guess the Wordle in 6 tries.</li>
-    <li>Each guess must be a valid 5-letter word.</li>
-    <li>The color of the tiles will change to show how close your guess was to the word.</li>
-    <li>Guess the Wordle in 6 tries.</li>
-    <li>Guess the Wordle in 6 tries.</li>
-    <li>Guess the Wordle in 6 tries.</li>
+    <li>Вгадайте слово за 6 спроб.</li>
+    <li>Кожна спроба має бути дійсним словом із 5 літер.</li>
+    <li>Колір клітин зміниться, щоб показати, наскільки близьким було ваше припущення до слова.</li>
+    <li>Зелений - літера на своєму місці.</li>
+    <li>Жовтий - літера є у слові.</li>
+    <li>Чорний - літери немає у слові.</li>
   </ul>
     <button id="close-popup">&#10005;</button>
   </div>
