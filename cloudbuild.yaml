@@ -1,15 +1,6 @@
 steps:
-  # Step 1: Build the app
-  - name: 'gcr.io/cloud-builders/npm'
-    args: ['install']
-    dir: '/workspace'
-
-  - name: 'gcr.io/cloud-builders/npm'
-    args: ['run', 'build']
-    dir: '/workspace'
-
-  # Step 2: Deploy the app to Google Cloud Storage
+  # Copy app files to Google Cloud Storage
   - name: 'gcr.io/cloud-builders/gsutil'
-    args: ['-m', 'cp', '-r', '/workspace/build', 'gs://wordle-ua']
+    args: ['-m', 'cp', '-r', '.', 'gs://wordle-ua']
 
 timeout: '300s'
